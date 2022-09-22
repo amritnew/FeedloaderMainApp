@@ -18,13 +18,20 @@ final class FeedLoaderWithFallbackComposite: FeedLoader {
     }
     
     func load(completion: @escaping ((FeedLoader.Result) -> Void)) {
-        primaryLoader.load(completion: completion)
+        primaryLoader.load { [weak self] result in
+            switch result {
+            case .success:
+                completion(result)
+            case .failure:
+                self?.fallbackLoader.load(completion: completion)
+            }
+        }
     }
 }
 
 class FeedLoaderWithFallbackCompositeTests: XCTestCase {
 
-    func test_load_deliversPrimaryFeedOnPrimaryLoaderSucess() {
+    func test_load_deliversPrimaryFeedOnPrimaryLoaderSuccess() {
         let primaryFeed = uniqueFeed()
         let fallbackFeed = uniqueFeed()
         let sut = makeSUT(primaryResult: .success(primaryFeed), fallbackResult: .success(fallbackFeed))
@@ -43,6 +50,26 @@ class FeedLoaderWithFallbackCompositeTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    func test_load_deliversFallbackFeedOnPrimaryLoaderFailure() {
+        let fallbackFeed = uniqueFeed()
+        let sut = makeSUT(primaryResult: .failure(anyError()), fallbackResult: .success(fallbackFeed))
+        
+        let exp = expectation(description: "wait for load completion")
+        sut.load { result in
+            switch result {
+            case let .success(receivedFeed):
+                XCTAssertEqual(receivedFeed, fallbackFeed)
+            case .failure:
+                XCTFail("Expected fallback load feed result, got \(result) instead")
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    //MARK: Helpers
+    
     private func makeSUT(primaryResult: FeedLoader.Result, fallbackResult: FeedLoader.Result, file: StaticString = #file, line: UInt = #line) -> FeedLoaderWithFallbackComposite {
         let primaryLoader = LoaderStub(result: primaryResult)
         let fallbackLoader = LoaderStub(result: fallbackResult)
@@ -57,6 +84,10 @@ class FeedLoaderWithFallbackCompositeTests: XCTestCase {
         addTeardownBlock { [weak instance] in
             XCTAssertNil(instance, "Instance of sut have been deallocated. Potential memory leak", file: file, line: line)
         }
+    }
+    
+    private func anyError() -> NSError {
+        return NSError(domain: "any-error", code: 0, userInfo: nil)
     }
     
     private func uniqueFeed() -> [FeedImage] {
