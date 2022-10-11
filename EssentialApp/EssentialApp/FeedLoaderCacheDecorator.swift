@@ -19,11 +19,17 @@ public class FeedLoaderCacheDecorator: FeedLoader {
     public func load(completion: @escaping ((FeedLoader.Result) -> Void)) {
         decoratee.load { [weak self] result in
             completion(result.map({ feeds in
-                self?.cache.save(feeds, completion: { _ in })
+                self?.cache.saveIgnoringResult(feeds)
                 return feeds
             }))
         }
         
+    }
+}
+
+private extension FeedCache {
+    func saveIgnoringResult(_ feed: [FeedImage]) {
+        save(feed) { _ in }
     }
 }
 
