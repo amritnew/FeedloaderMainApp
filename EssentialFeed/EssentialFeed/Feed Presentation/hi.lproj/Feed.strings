@@ -1,0 +1,9 @@
+/* 
+  Feed.strings
+  EssentialFeed
+
+  Created by AmritPandey on 12/09/22.
+  
+*/
+"FEED_VIEW_TITLE" = "मेरे फीड";
+"FEED_VIEW_CONNECTION_ERROR" = "सर्वर से कनेक्ट नहीं हो सका";
