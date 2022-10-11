@@ -24,10 +24,10 @@ class FeedLoaderCacheDecorator: FeedLoader {
     
     func load(completion: @escaping ((FeedLoader.Result) -> Void)) {
         decoratee.load { [weak self] result in
-            if let items = try? result.get() {
-                self?.cache.save(items, completion: { _ in })
-            }
-            completion(result)
+            completion(result.map({ feeds in
+                self?.cache.save(feeds, completion: { _ in })
+                return feeds
+            }))
         }
         
     }
