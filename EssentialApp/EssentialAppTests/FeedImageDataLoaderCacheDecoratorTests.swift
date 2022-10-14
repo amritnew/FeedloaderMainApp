@@ -65,9 +65,11 @@ class FeedImageDataLoaderCacheDecoratorTests: XCTestCase {
     
     //MARK: - Helpers
     
-    private func makeSUT() -> (sut: FeedImageDataLoader, loader: LoaderSpy) {
+    private func makeSUT() -> (sut: FeedImageDataLoader, loader: FeedImageDataLoaderSpy) {
         let loader = FeedImageDataLoaderSpy()
         let sut = FeedImageDataLoaderCacheDecorator(decoratee: loader)
+        trackMemoryLeak(instance: loader)
+        trackMemoryLeak(instance: sut)
         return (sut, loader)
     }
     
