@@ -25,8 +25,10 @@ class FeedImageDataLoaderCacheDecorator: FeedImageDataLoader {
     
     func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
         decoratee.loadImageData(from: url) { [weak self] result in
-            self?.cache.save((try? result.get()) ?? Data(), for: url, completion: { _ in })
-            completion(result)
+            completion(result.map({ data in
+                self?.cache.save(data, for: url) { _ in }
+                return data
+            }))
         }
     }
 }
@@ -82,6 +84,17 @@ class FeedImageDataLoaderCacheDecoratorTests: XCTestCase {
         loader.complete(with: anyData())
         
         XCTAssertEqual(cache.messages, [.save(data: anyData(), for: anyUrl())], "Expected to cache loaded image data on success")
+    }
+    
+    func test_loadImageData_doesNotCacheDataOnLoaderFailure() {
+        let cache = CachesSpy()
+        let url = anyUrl()
+        let (sut, loader) = makeSUT(cache: cache)
+
+        _ = sut.loadImageData(from: url) { _ in }
+        loader.complete(with: anyError())
+
+        XCTAssertTrue(cache.messages.isEmpty, "Expected not to cache image data on load error")
     }
     
     //MARK: - Helpers
