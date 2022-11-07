@@ -27,9 +27,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let remoteImageLoader = RemoteFeedImageDataLoader(httpClient: httpClient)
         
         let localStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("FeedStore.sqlite")
+        
+        #if DEBUG
         if CommandLine.arguments.contains("-reset") {
             try? FileManager.default.removeItem(at: localStoreUrl)
         }
+        #endif
+        
         let localStore = try! CoreDataFeedStore(storeUrl: localStoreUrl, bundle: Bundle(for: CoreDataFeedStore.self))
         let localFeedLoader = LocalFeedLoader(store: localStore, currentDate: Date.init)
         let localImageLoader = LocalFeedImageDataLoader(store: localStore)
@@ -76,15 +80,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func makeRemoteClient() -> HTTPClient {
-        switch UserDefaults.standard.string(forKey: "connectivity") {
-        case "offline":
+        #if DEBUG
+        if UserDefaults.standard.string(forKey: "connectivity") == "offline" {
             return AnyFailingHttpClient()
-        default:
-            return URLSessionHttpClient(urlSession: URLSession(configuration: .ephemeral))
         }
+        #endif
+            
+        return URLSessionHttpClient(urlSession: URLSession(configuration: .ephemeral))
     }
 }
 
+#if DEBUG
 private class AnyFailingHttpClient: HTTPClient {
     private class Task: HTTPClientTask {
         func cancel() { }
@@ -95,4 +101,5 @@ private class AnyFailingHttpClient: HTTPClient {
         return Task()
     }
 }
+#endif
 
