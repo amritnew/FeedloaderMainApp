@@ -32,6 +32,7 @@
 		65E6815828FD4512008ED3E8 /* FeedImageDataLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6815728FD4512008ED3E8 /* FeedImageDataLoaderCacheDecorator.swift */; };
 		65F28F842916969C00BF61D3 /* EssentialAppUIAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F28F832916969C00BF61D3 /* EssentialAppUIAcceptanceTests.swift */; };
 		65F28F862916969C00BF61D3 /* EssentialAppUIAcceptanceTestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F28F852916969C00BF61D3 /* EssentialAppUIAcceptanceTestsLaunchTests.swift */; };
+		65F28F8D2919183300BF61D3 /* DebuggingSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F28F8C2919183200BF61D3 /* DebuggingSceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		65F28F812916969B00BF61D3 /* EssentialAppUIAcceptanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialAppUIAcceptanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65F28F832916969C00BF61D3 /* EssentialAppUIAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssentialAppUIAcceptanceTests.swift; sourceTree = "<group>"; };
 		65F28F852916969C00BF61D3 /* EssentialAppUIAcceptanceTestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssentialAppUIAcceptanceTestsLaunchTests.swift; sourceTree = "<group>"; };
+		65F28F8C2919183200BF61D3 /* DebuggingSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggingSceneDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			children = (
 				65A773D328D8803F00512DEB /* AppDelegate.swift */,
 				65A773D528D8803F00512DEB /* SceneDelegate.swift */,
+				65F28F8C2919183200BF61D3 /* DebuggingSceneDelegate.swift */,
 				65A773D728D8803F00512DEB /* ViewController.swift */,
 				65A265E128DC58D50059A0AA /* FeedLoaderWithFallbackComposite.swift */,
 				65A265E528DC72150059A0AA /* FeedImageDataLoaderWithFallbackComposite.swift */,
@@ -340,6 +343,7 @@
 				65A773D428D8803F00512DEB /* AppDelegate.swift in Sources */,
 				65A265E228DC58D60059A0AA /* FeedLoaderWithFallbackComposite.swift in Sources */,
 				659627BF28F5A3490014E54D /* FeedLoaderCacheDecorator.swift in Sources */,
+				65F28F8D2919183300BF61D3 /* DebuggingSceneDelegate.swift in Sources */,
 				65A773D628D8803F00512DEB /* SceneDelegate.swift in Sources */,
 				65A265E628DC72150059A0AA /* FeedImageDataLoaderWithFallbackComposite.swift in Sources */,
 				65E6815828FD4512008ED3E8 /* FeedImageDataLoaderCacheDecorator.swift in Sources */,
