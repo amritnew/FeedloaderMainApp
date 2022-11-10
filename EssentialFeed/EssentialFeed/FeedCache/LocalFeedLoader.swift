@@ -39,7 +39,7 @@ extension LocalFeedLoader: FeedLoader {
 }
  
 extension LocalFeedLoader {
-    func validate() {
+    public func validate() {
         store.retrieve{ [weak self] result in
             guard let self = self else { return }
             switch result {
