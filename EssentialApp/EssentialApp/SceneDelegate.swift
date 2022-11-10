@@ -13,14 +13,14 @@ import EssentialFeediOS
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    let localStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("FeedStore.sqlite")
     
     private lazy var httpClient: HTTPClient = {
         URLSessionHttpClient(urlSession: URLSession(configuration: .ephemeral))
     }()
     
     private lazy var store: FeedStore & FeedImageDataStore = {
-        try! CoreDataFeedStore(storeUrl: localStoreUrl, bundle: Bundle(for: CoreDataFeedStore.self))
+        try! CoreDataFeedStore(storeUrl: NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("FeedStore.sqlite"),
+                               bundle: Bundle(for: CoreDataFeedStore.self))
     }()
     
     convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
@@ -40,7 +40,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureWindow() {
         let remoteUrl = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed")!
-        let httpClient = makeRemoteClient()
         let remoteFeedLoader = RemoteFeedLoader(url: remoteUrl, client: httpClient)
         let remoteImageLoader = RemoteFeedImageDataLoader(httpClient: httpClient)
         
@@ -86,10 +85,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-    }
-
-    func makeRemoteClient() -> HTTPClient {
-        return httpClient
     }
 }
 
