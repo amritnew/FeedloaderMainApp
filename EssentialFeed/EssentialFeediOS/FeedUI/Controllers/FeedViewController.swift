@@ -8,18 +8,27 @@
 import UIKit
 import EssentialFeed
 
+public protocol FeedRefreshViewControllerDelegate {
+    func didRequestFeedRefresh()
+}
+
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     
-    var tableModel = [FeedImageCellController]() {
+    private var tableModel = [FeedImageCellController]() {
         didSet {tableView.reloadData()}
     }
     
-    var delegate: FeedRefreshViewControllerDelegate?
     @IBOutlet var refreshController: UIRefreshControl?
     @IBOutlet private(set) public var errorView: ErrorView?
     
+    public var delegate: FeedRefreshViewControllerDelegate?
+    
     public override func viewDidLoad() {
         refresh()
+    }
+    
+    public func display(_ cellControllers: [FeedImageCellController]) {
+        self.tableModel = cellControllers
     }
     
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -52,10 +61,6 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     private func cancelCellController(forRowAt indexPath: IndexPath) {
         cellController(forRowAt: indexPath).cancelLoad()
     }
-}
-
-protocol FeedRefreshViewControllerDelegate {
-    func didRequestFeedRefresh()
 }
 
 //MARK: - Refresh Controller
