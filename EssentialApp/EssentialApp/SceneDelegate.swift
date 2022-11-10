@@ -14,6 +14,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     let localStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("FeedStore.sqlite")
+    
+    private lazy var httpClient: HTTPClient = {
+        URLSessionHttpClient(urlSession: URLSession(configuration: .ephemeral))
+    }()
+    
+    private lazy var store: FeedStore & FeedImageDataStore = {
+        try! CoreDataFeedStore(storeUrl: localStoreUrl, bundle: Bundle(for: CoreDataFeedStore.self))
+    }()
+    
+    convenience init(httpClient: HTTPClient, store: FeedStore & FeedImageDataStore) {
+        self.init()
+        self.httpClient = httpClient
+        self.store = store
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -30,9 +44,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let remoteFeedLoader = RemoteFeedLoader(url: remoteUrl, client: httpClient)
         let remoteImageLoader = RemoteFeedImageDataLoader(httpClient: httpClient)
         
-        let localStore = try! CoreDataFeedStore(storeUrl: localStoreUrl, bundle: Bundle(for: CoreDataFeedStore.self))
-        let localFeedLoader = LocalFeedLoader(store: localStore, currentDate: Date.init)
-        let localImageLoader = LocalFeedImageDataLoader(store: localStore)
+        let localFeedLoader = LocalFeedLoader(store: store, currentDate: Date.init)
+        let localImageLoader = LocalFeedImageDataLoader(store: store)
         
         window?.rootViewController = UINavigationController(rootViewController: FeedUIComposer.feedComposedWith(
             feedLoader: FeedLoaderWithFallbackComposite(
@@ -76,7 +89,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func makeRemoteClient() -> HTTPClient {
-        return URLSessionHttpClient(urlSession: URLSession(configuration: .ephemeral))
+        return httpClient
     }
 }
 
