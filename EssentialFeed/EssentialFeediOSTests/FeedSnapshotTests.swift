@@ -7,6 +7,7 @@
 
 import XCTest
 import EssentialFeediOS
+@testable import EssentialFeed
 
 class FeedSnapshotTests: XCTestCase {
 
@@ -17,10 +18,18 @@ class FeedSnapshotTests: XCTestCase {
         
         record(snapshot: sut.snapshot(), name: "EMPTY_FEED")
     }
+    
+    func test_feedWithContent() {
+        let sut = makeSUT()
+        
+        sut.display(feedWithContent())
+        
+        record(snapshot: sut.snapshot(), name: "FEED_WITH_CONTENT")
+    }
 
     //MARK: - Helpers
     
-    func makeSUT() -> FeedViewController {
+    private func makeSUT() -> FeedViewController {
         let bundle = Bundle(for: FeedViewController.self)
         let storyBoard = UIStoryboard(name: "Feed", bundle: bundle)
         let controller = storyBoard.instantiateInitialViewController() as! FeedViewController
@@ -28,11 +37,23 @@ class FeedSnapshotTests: XCTestCase {
         return controller
     }
     
-    func emptyFeed() -> [FeedImageCellController] {
+    private func emptyFeed() -> [FeedImageCellController] {
         return []
     }
     
-    func record(snapshot: UIImage, name: String, file: StaticString = #file, line: UInt = #line) {
+    private func feedWithContent() -> [ImageStub] {
+        return [ImageStub(
+            description: "The East Side Gallery is an open-air gallery in Berlin. It consists of a series of murals painted directly on a 1,316 m long remnant of the Berlin Wall, located near the centre of Berlin, on Mühlenstraße in Friedrichshain-Kreuzberg. The gallery has official status as a Denkmal, or heritage-protected landmark.",
+            location: "East Side Gallery Memorial in Berlin, Germany",
+            image: UIImage.make(withColor: .red)),
+                ImageStub(
+                    description: "Garth Pier is a Grade II listed structure in Bangor, Gwynedd, North Wales. At 1,500 feet in length, it is the second-longest pier in Wales, and the ninth longest in the British Isles.",
+                    location: "Bangor Pier",
+                    image: UIImage.make(withColor: .green))
+        ]
+    }
+    
+    private func record(snapshot: UIImage, name: String, file: StaticString = #file, line: UInt = #line) {
         guard let snapshotData = snapshot.pngData() else {
             XCTFail("Fail to generate PNG data representation from snapshot", file: file, line: line)
             return
@@ -55,6 +76,18 @@ class FeedSnapshotTests: XCTestCase {
     }
  }
 
+private extension FeedViewController {
+    func display(_ stubs: [ImageStub]) {
+        let cells: [FeedImageCellController] = stubs.map { stub in
+            let cellController = FeedImageCellController(delegate: stub)
+            stub.controller = cellController
+            return cellController
+        }
+        
+        display(cells)
+    }
+}
+
 extension UIViewController {
     func snapshot() -> UIImage {
         let rendered = UIGraphicsImageRenderer(bounds: view.bounds)
@@ -62,4 +95,28 @@ extension UIViewController {
             view.layer.render(in: action.cgContext)
         }
     }
+}
+
+private class ImageStub: FeedImageCellControllerDelegate {
+    let viewModel: FeedImageViewModel<UIImage>
+    weak var controller: FeedImageCellController?
+    
+    init(description: String?, location: String?, image: UIImage?) {
+        viewModel = FeedImageViewModel(
+            isLoading: false,
+            shoulretry: image == nil,
+            description: description,
+            location: location,
+            image: image)
+    }
+    
+    func didRequestImage() {
+        controller?.display(viewModel)
+    }
+    
+    func didCancelImageRequest() {
+        
+    }
+    
+    
 }
