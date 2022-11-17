@@ -34,6 +34,14 @@ class FeedSnapshotTests: XCTestCase {
         
         record(snapshot: sut.snapshot(), name: "FEED_WITH_ERROR_MESSAGE")
     }
+    
+    func test_feedWithfailedImageLoading() {
+        let sut = makeSUT()
+        
+        sut.display(feedWithFailedImageLoading())
+        
+        record(snapshot: sut.snapshot(), name: "FEED_WITH_FAILED_IMAGE_LOADING")
+    }
 
     //MARK: - Helpers
     
@@ -58,6 +66,19 @@ class FeedSnapshotTests: XCTestCase {
                     description: "Garth Pier is a Grade II listed structure in Bangor, Gwynedd, North Wales. At 1,500 feet in length, it is the second-longest pier in Wales, and the ninth longest in the British Isles.",
                     location: "Bangor Pier",
                     image: UIImage.make(withColor: .green))
+        ]
+    }
+    
+    private func feedWithFailedImageLoading() -> [ImageStub] {
+        return [
+            ImageStub(
+                description: nil,
+                location: "Berlin, Germany",
+                image: nil),
+            ImageStub(
+                description: nil,
+                location: "Bangor Pier",
+                image: nil)
         ]
     }
     
