@@ -1,0 +1,29 @@
+name: Xcode - Build and Analyze
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+# A worklflow run is made up of one or more jobs, which can run sequentially or parallel
+jobs:
+# This workflow need a single job "build and test"
+  build-and-test:
+    name: Build and analyse default scheme using xcodebuild command
+    runs-on: macos-latest
+  
+  # Steps represent a sequence of task that will be executed as apart of the Job
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_14.1.app
+        
+      - name: Xcode version
+        run: /usr/bin/xcodebuild -version
+        
+      - name: Build and test
+        run: xcodebuild clean build test -workspace FeedloaderMainApp/EssentialApp.xcworkspace -scheme "CI_iOS" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 13,OS=15.5" ONLY_ACTIVE_ARCH=YES
+        
+        
