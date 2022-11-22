@@ -11,6 +11,18 @@ import EssentialFeediOS
 
 class SceneDelegateTests: XCTestCase {
 
+    func test_configureWindow_setsWindowAsKeyAndVisible() {
+        let window = UIWindow()
+        window.windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        let sut = SceneDelegate()
+        sut.window = window
+        
+        sut.configureWindow()
+        
+        XCTAssertTrue(window.isKeyWindow, "Expected window to be a key window")
+        XCTAssertFalse(window.isHidden, "Expected window not be hidden")
+    }
+    
     func test_sceneWillConnectToSession_configuresRootViewCOntroller() {
         let sut = SceneDelegate()
         sut.window = UIWindow()
