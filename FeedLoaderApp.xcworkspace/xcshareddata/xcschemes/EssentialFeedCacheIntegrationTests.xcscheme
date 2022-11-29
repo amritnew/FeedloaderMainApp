@@ -19,7 +19,7 @@
             BlueprintIdentifier = "65525AF4287C334600178A17"
             BuildableName = "EssentialFeed.framework"
             BlueprintName = "EssentialFeed"
-            ReferencedContainer = "container:EssentialFeed.xcodeproj">
+            ReferencedContainer = "container:EssentialFeed/EssentialFeed.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
@@ -28,10 +28,10 @@
             testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "65525B70287C42F800178A17"
-               BuildableName = "EssentialFeedAPIEndToEndTests.xctest"
-               BlueprintName = "EssentialFeedAPIEndToEndTests"
-               ReferencedContainer = "container:EssentialFeed.xcodeproj">
+               BlueprintIdentifier = "65525B62287C427500178A17"
+               BuildableName = "EssentialFeedCacheIntegrationTests.xctest"
+               BlueprintName = "EssentialFeedCacheIntegrationTests"
+               ReferencedContainer = "container:EssentialFeed/EssentialFeed.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
