@@ -30,8 +30,7 @@ public final class RemoteFeedLoader: FeedLoader {
         client.get(from: url) { [weak self] result  in
             guard self != nil else { return }
             switch result {
-            case let .success(data, response):
-                print(String(data: data, encoding: .utf8) )
+            case let .success((data, response)):
                 completion(RemoteFeedLoader.map(data: data, response: response))
             case .failure:
                 completion(.failure(Error.connectivity))
