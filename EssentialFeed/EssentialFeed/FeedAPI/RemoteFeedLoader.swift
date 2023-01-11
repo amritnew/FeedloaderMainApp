@@ -9,8 +9,8 @@ import Foundation
 
 
 public final class RemoteFeedLoader: FeedLoader {
-    let url: URL
-    let client: HTTPClient
+    private let url: URL
+    private let client: HTTPClient
     
     enum Error: Swift.Error {
         case connectivity
@@ -41,19 +41,13 @@ public final class RemoteFeedLoader: FeedLoader {
     private static func map(data: Data, response:HTTPURLResponse) -> Result {
         do  {
             let items = try FeedItemsMapper.map(data, response)
-            return .success(items.toModel())
+            return .success(items)
         }
         catch {
             return .failure(Error.invalidData)
         }
     }
 
-}
-
-private extension Array where Element == RemoteFeedItem {
-    func toModel() -> [FeedImage] {
-        return map { FeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.image) }
-    }
 }
 
 

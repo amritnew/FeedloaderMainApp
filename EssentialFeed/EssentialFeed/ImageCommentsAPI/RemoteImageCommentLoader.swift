@@ -8,15 +8,15 @@
 import Foundation
 
 public class RemoteImageCommentLoader {
-    public typealias Result = Swift.Result<[ImageComment], Error>
+    private let client: HTTPClient
+    private let url: URL
     
     public enum Error: Swift.Error {
         case connectivity
         case invalidData
     }
     
-    private let client: HTTPClient
-    private let url: URL
+    public typealias Result = Swift.Result<[ImageComment], Error>
     
     public init(url: URL, client: HTTPClient) {
         self.url = url
